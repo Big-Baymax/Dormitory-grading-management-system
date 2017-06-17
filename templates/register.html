@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+		<title>宿舍卫生评比管理系统注册页</title>
+
+		<!-- Bootstrap -->
+		<link rel="shortcut icon" type="image/x-icon" href="logo.png" media="screen" />
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+			<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+			<script src="js/jquery-3.1.1.min.js"></script>
+			<!-- Include all compiled plugins (below), or include individual files as needed -->
+			<script src="js/bootstrap.min.js"></script>
+			<link rel="stylesheet" type="text/css" href="css/login_register.css" />
+			<link rel="stylesheet" type="text/css" href="css/htmleaf-demo.css">
+	
+	</head>
+	<body>
+		<div class="htmleaf-container">
+		<header class="htmleaf-header">
+			<h1>宁德师范学院宿舍管理系统<span>Dormitory management system</span></h1>
+			<div class="htmleaf-links">
+				<a class="glyphicon glyphicon-home" href="index.php" title="主页"></a>
+				<a class="glyphicon glyphicon-share-alt" href="login.php" title="返回登陆页"></a>
+			</div>
+		</header>
+			<div class="demo form-bg" style="padding: 20px 0;">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-offset-3 col-md-6">
+							<form class="form-horizontal" method="post">
+								<span class="heading">用户注册</span>
+								<div class="form-group">
+									<input type="text" class="form-control" name="username" id="username" placeholder="姓名" required >
+									<i class="glyphicon glyphicon-user"></i>
+								</div>
+								<div class="form-group">
+									<input type="text" class="form-control" name="no" id="userid" placeholder="学号或教师号" required>
+									<i class="glyphicon glyphicon-pushpin"></i>
+								</div>
+								<div class="form-group">
+									<input type="password" class="form-control" name="password" id="Password" placeholder="密　码" required onchange="checkPasswords()">
+									<i class="glyphicon glyphicon-lock"></i>
+								</div>
+								<div class="form-group">
+									<input type="password" class="form-control" name="password2" id="checkPassword" placeholder="确认密码" required onchange="checkPasswords()">
+									<i class="glyphicon glyphicon-lock"></i>
+								</div>
+								<div class="form-group help">
+									<input type="tel" class="form-control" name="phone" id="phoneid" placeholder="手机号" required>
+									<i class="glyphicon glyphicon-earphone"></i>
+									<!--
+                                    	作者：764929841@qq.com
+                                    	时间：2017-03-18
+                                    	描述：获取验证码
+                                    -->
+									<!--<input type="text" class="form-control" id="phonecheckcode" placeholder="手机验证码" maxlength="6" style="width: 40%;" required>
+									<a class="glyphicon glyphicon-comment"></a>-->
+								</div>
+								<div class="form-group">
+									<input type="text" class="form-control" name="CAPTCHA" id="checkcode" maxlength="4" placeholder="验证码" style="width: 60%; float: left;" required>
+									<i class="glyphicon glyphicon-ok-sign"></i>
+									<input type="image" src="background/image.php" height="40px" width="119px" alt="点击刷新" onclick="this.src='background/image.php?aa=random()'"/>
+
+								</div>
+								<div class="form-group">
+									<button id="ok" type="submit" class="rehisterbtn">立即注册</button>
+									<button type="reset" class="rehisterbtn">重置</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			 <script>  
+            function checkPasswords() {  
+            var passl = document.getElementById("Password");  
+            var pass2 = document.getElementById("checkPassword");  
+            if (passl.value != pass2.value)  
+                passl.setCustomValidity("两次密码必须输入一致！");  
+            else  
+                passl.setCustomValidity('');  
+        }  
+  
+        function check() {  
+            document.getElementById('ok').disabled = 'disabled';  
+        }  
+        $(document).keyup(function(event){ 
+    if(event.keyCode ==13){ 
+      $("#ok").trigger("click"); 
+    } 
+})
+    </script>  
+	</body>
+</html>

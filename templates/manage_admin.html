@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+		<title>宿舍卫生评比管理系统_用户界面</title>
+
+		<!-- Bootstrap -->
+		<link rel="shortcut icon" type="image/x-icon" href="logo.png" media="screen" />
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+		<link rel="stylesheet" type="text/css" href="css/summernote.css" />
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="js/jquery-3.1.1.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="js/bootbox.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/layer.min.js"></script>
+		<script src="js/summernote.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/summernote-zh-CN.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#note').summernote({
+					height: 300,
+					minHeight: null, // set minimum height of editor
+					maxHeight: null, // set maximum height of editor
+					focus: false, // set focus to editable area after initializing summernote
+					lang: 'zh-CN', // default: 'en-US'
+					fontNames: ['宋体', '微软雅黑', '黑体', '楷体', 'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New'],
+					toolbar: [
+						['style', ['style']],
+						['font', ['bold', 'underline', 'clear']],
+						['fontname', ['fontname']],
+						['color', ['color']],
+						['para', ['ul', 'ol', 'paragraph']],
+						['table', ['table']],
+						['view', ['fullscreen', 'codeview', 'help']]
+					]
+				});
+
+//				if($('#note').summernote('code')=="请编辑你想要发布的内容……"){
+//					$('#note').on('summernote.focus', function() {
+//						$('#note').summernote('code',"");
+//						$('#note').on('summernote.blur', function() {
+//						markupStr = $('#note').summernote('code');
+//							if(markupStr==""){
+//								$('#note').summernote('code',"请编辑你想要发布的内容……");
+//							}
+//							else{
+//
+//							}
+//
+//						});
+//					});
+//
+//				}
+
+
+				//				图片上传
+				//				$('#summernote').summernote({
+				//					callbacks: {
+				//						onImageUpload: function(files) {
+				//							//上传图片到服务器，使用了formData对象
+				//							var formData = new FormData();
+				//							formData.append('file', files[0]);
+				//							$.ajax({
+				//								url: 'upload', //后台文件上传接口
+				//								type: 'POST',
+				//								data: formData,
+				//								processData: false,
+				//								contentType: false,
+				//								success: function(data) {
+				//									$('#summernote').summernote('insertImage', data, 'img');
+				//								}
+				//							});
+				//						}
+				//					}
+				//				});
+
+				//				操作提醒对话框
+				//公告保存为草稿
+				$("#notice-draft").click(function(){
+					var markupStr = $('#note').summernote('code');
+					if (markupStr||$("#notice-title").val()!=""){
+						$.ajax({
+							url:"background/save.php?id=4",
+							type: 'POST',
+							data: {
+								title: $("#notice-title").val(),
+								content:markupStr,
+							},
+							success: function(result) {
+								if(result==1)//判断0还是1
+								{
+									layer.msg("提交成功！");
+                                    history.go(0);
+								}
+								else
+								{
+									layer.msg(result);
+								}
+
+							},
+							error:  function(){
+								layer.msg("数据发送失败，请检查网络链接！");
+							}
+						});
+					}else
+					{
+						layer.msg("内容和标题不能为空!");
+					}
+
+				});
+				//公告提交发布
+				$("#notice-send").click(function(){
+					var markupStr = $('#note').summernote('code');
+					if (markupStr||$("#notice-title").val()!=""){
+						$.ajax({
+							url:"background/save.php?id=3",
+							type: 'POST',
+							data: {
+								title: $("#notice-title").val(),
+								content:markupStr,
+							},
+							success: function(result) {
+								if(result==1)//判断0还是1
+								{
+									layer.msg("提交成功！");
+                                    history.go(0);
+								}
+								else
+								{
+									layer.msg(result);
+								}
+
+							},
+							error:  function(){
+								layer.msg("数据发送失败，请检查网络链接！");
+							}
+						});
+					}else
+					{
+						layer.msg("内容和标题不能为空!");
+					}
+
+				});
+				//删除公告
+				$(".del.glyphicon.glyphicon-remove.notice").click(function() {
+					var obj = $(this);
+					var id = $(this).attr("data");
+					layer.msg('你确定删除吗？', {
+						time: 0, //不自动关闭
+						btn: ['确定', '取消'],
+						yes: function(index) {
+							$.ajax({
+								url:"background/delete.php",
+								type: 'GET',
+								data: {
+									id: id,
+									table: "notice"
+
+								},
+								success: function(result) {
+									if(result==1)//判断0还是1
+									{
+										layer.msg("提交成功！");
+										obj.parent().parent().remove();
+									}
+									else
+									{
+										layer.msg(result);
+									}
+
+								},
+								error:  function(){
+									layer.msg("数据发送失败，请检查网络链接！");
+								}
+							});
+							layer.close(index);
+						}
+					});
+				})
+				//编辑公告
+				$(".editor.glyphicon.glyphicon-pencil.notice").click(function(){
+					$.ajax({
+						url:"background/select.php",
+						type: 'GET',
+						data: {
+							table: "notice",
+							id: $(this).attr("data")
+						},
+						success: function(r) {
+							var result = $.parseJSON(r);
+							if(result.result)//判断0还是1
+							{
+								$('#note').summernote('code',result.content);
+								$("#notice-title").val(result.title);
+							}
+							else
+							{
+								layer.msg(result.result);
+							}
+
+						},
+						error:  function(){
+							layer.msg("数据发送失败，请检查网络链接！");
+						}
+					});
+				})
+
+				//删除报修信息
+				$(".del.glyphicon.glyphicon-remove.repair").click(function() {
+					var obj = $(this);
+					var id = $(this).attr("data");
+					layer.msg('你确定删除吗？', {
+						time: 0, //不自动关闭
+						btn: ['确定', '取消'],
+						yes: function(index) {
+							$.ajax({
+								url:"background/delete.php",
+								type: 'GET',
+								data: {
+									table: "repair",
+									id: id
+								},
+								success: function(result) {
+									if(result==1)//判断0还是1
+									{
+										layer.msg("提交成功！");
+										obj.parent().parent().remove();
+									}
+									else
+									{
+										layer.msg(result);
+									}
+
+								},
+								error:  function(){
+									layer.msg("数据发送失败，请检查网络链接！");
+								}
+							});
+							layer.close(index);
+						}
+					});
+				})
+				//报修登记
+				$(".enregister.glyphicon.glyphicon-ok.repair").click(function() {
+					$.ajax({
+						url:"background/update.php",
+						type: 'GET',
+						data: {
+							table:"repair",
+							id: $(this).attr("data")
+						},
+						success: function(r) {
+							var result = $.parseJSON(r);
+							if(result.result)//判断0还是1
+							{
+								layer.msg("提交成功！");
+							}
+							else
+							{
+								layer.msg(result.mes);
+							}
+
+						},
+						error:  function(){
+							layer.msg("数据发送失败，请检查网络链接！");
+						}
+					});
+				})
+
+				//删除留言信息
+				$(".del.glyphicon.glyphicon-remove.message").click(function() {
+					var obj = $(this);
+					var id = $(this).attr("data");
+					layer.msg('你确定删除吗？', {
+						time: 0, //不自动关闭
+						btn: ['确定', '取消'],
+						yes: function(index) {
+							$.ajax({
+								url:"background/delete.php",
+								type: 'GET',
+								data: {
+									table: "message",
+									id: id
+								},
+								success: function(result) {
+									if(result==1)//判断0还是1
+									{
+										layer.msg("提交成功！");
+										obj.parent().parent().remove();
+									}
+									else
+									{
+										layer.msg(result);
+									}
+
+								},
+								error:  function(){
+									layer.msg("数据发送失败，请检查网络链接！");
+								}
+							});
+							layer.close(index);
+						}
+					});
+				})
+				//查看留言
+				$(".show.glyphicon.glyphicon-list-alt.message").click(function() {
+					var obj = $(this);
+					var id = $(this).attr("data");
+							$.ajax({
+								url:"background/select.php",
+								type: 'GET',
+								data: {
+									table: "message",
+									id: id
+								},
+								success: function(r) {
+									var result = $.parseJSON(r);
+									if(result.result)//判断0还是1
+									{
+										$("#messagetitle").text(result.title);
+										$("#messagecontent").text(result.content);
+									}
+									else
+									{
+										layer.msg(result.result);
+									}
+
+								},
+								error:  function(){
+									layer.msg("数据发送失败，请检查网络链接！");
+								}
+							});
+
+				})
+				//回复获取id
+				var message_id;
+				$(".reply.glyphicon.glyphicon-comment.message").click(function(){
+					message_id = $(this).attr("data");
+				})
+				//回复留言
+				$("#messageanswer-ok").click(function(){
+					$.ajax({
+						url:"background/update.php",
+						type: 'GET',
+						data: {
+							table: "message",
+							answer: $("#messageanswer").val(),
+							id: message_id
+						},
+						success: function(r) {
+							var result = $.parseJSON(r);
+							if(result.result)//判断0还是1
+							{
+								layer.msg("修改成功！");
+								$(".message.btn.btn-default").click();
+							}
+							else
+							{
+								layer.msg("修改失败！");
+							}
+
+						},
+						error:  function(){
+							layer.msg("数据发送失败，请检查网络链接！");
+						}
+					});
+
+				})
+
+
+				//删除评分
+				$(".del.glyphicon.glyphicon-remove.ranking").click(function() {
+					var obj = $(this);
+					var id = $(this).attr("data");
+					layer.msg('你确定删除吗？', {
+						time: 0, //不自动关闭
+						btn: ['确定', '取消'],
+						yes: function(index) {
+							$.ajax({
+								url:"background/delete.php",
+								type: 'GET',
+								data: {
+									table: "grade",
+									id: id
+								},
+								success: function(result) {
+									if(result==1)//判断0还是1
+									{
+										layer.msg("提交成功！");
+										obj.parent().parent().remove();
+									}
+									else
+									{
+										layer.msg(result);
+									}
+
+								},
+								error:  function(){
+									layer.msg("数据发送失败，请检查网络链接！");
+								}
+							});
+							layer.close(index);
+						}
+					});
+				})
+
+				//修改评分
+				var ranking_id;
+				var ranking_obj;
+				$(".edit.glyphicon.glyphicon-pencil.ranking").click(function() {
+					ranking_obj = $(this);
+					ranking_id = $(this).attr("data");
+					var week = ranking_obj.parent().siblings().eq(1).text();
+					var dorm = ranking_obj.parent().siblings().eq(2).text();
+					var Points = ranking_obj.parent().siblings().eq(6).text();
+					$("#ranking-week").val(week);
+					$("#ranking-Score").val(Points);
+					$("#ranking-dorm").val(dorm);
+				})
+				//提交修改信息
+				$("#ranking-ok").click(function() {
+					var obj = $(this);
+					var id = ranking_id;
+					if($("#ranking-week").val()==""||$("#ranking-Score").val()==""||$("#ranking-Score").val()==""){
+						layer.msg("不能为空哦！");
+					}
+					else
+					{
+						$.ajax({
+							url:"background/update.php",
+							type: 'GET',
+							data: {
+								table: "grade",
+								id: id,
+								points: $("#ranking-Score").val(),
+								weekly: $("#ranking-week").val()
+							},
+							success: function(r) {
+								var result = $.parseJSON(r);
+								if(result.result)//判断0还是1
+								{
+									layer.msg("修改成功！");
+									ranking_obj.parent().siblings().eq(1).text(result.weekly);
+									ranking_obj.parent().siblings().eq(2).text(result.dormitory);
+									ranking_obj.parent().siblings().eq(6).text(result.points);
+									$(".ranking.btn.btn-default").click();
+								}
+								else
+								{
+									layer.msg("修改失败！");
+								}
+
+							},
+							error:  function(){
+								layer.msg("数据发送失败，请检查网络链接！");
+							}
+						});
+					}
+					});
+				//过滤评分
+				  //初始化
+				var sortweek= <{if $week != ''}><{$week}><{else}>0<{/if}>,sortyear = <{if $year != ''}>"<{$year}>"<{else}>0<{/if}>,sortdepartment = <{if $department != ''}>"<{$department}>"<{else}>0<{/if}>,sortsex =  <{if $sex != ''}>"<{$sex}>"<{else}>0<{/if}>,sortpoints = 0,sortsort = <{if $sort != ''}>"<{$sort}>"<{else}>0<{/if}>;
+
+
+				$(".week.form-control.input.filter").val(sortweek);
+				$(".year.form-control.input.filter").val(sortyear);
+				$(".department.form-control.input.filter").val(sortdepartment);
+				$(".sex.form-control.input.filter").val(sortsex);
+				$(".points.form-control.input.filter").val(sortpoints);
+				$(".sort.form-control.input.filter").val(sortsort);
+				//选择框改变事件
+				$(".form-control.input.filter").change(function(){
+							$("#filter").submit();
+						}
+				);
+				//导入导出Excel
+				$(".Excel.btn.btn-default.output").click(function(){
+					downloadFile("background/export.php");
+
+				});
+				$(".Excel.btn.btn-default.input").click(function(){
+					$("#outputExcel").click();
+					$("#outputExcel").change(function(){
+						var formData = new FormData();
+						var name = $(this).val();
+						formData.append("file",$(this)[0].files[0]);
+						formData.append("name",name);
+						$.ajax({
+							url:"background/import.php",
+							type: 'POST',
+							data: formData,
+							processData : false,
+							contentType : false,
+							beforeSend:function(){
+								console.log("正在导入，请稍候");
+							},
+							success: function(r) {
+								var result = $.parseJSON(r);
+								if(result.result)//判断0还是1
+								{
+									layer.msg("导入成功！");
+								}
+								else
+								{
+									layer.msg(result.mes);
+								}
+
+							},
+							error:  function(){
+								layer.msg("数据发送失败，请检查网络链接！");
+							}
+						});
+					});
+				});
+				//下载文件
+				function downloadFile(url) {
+					try{
+						var elemIF = document.createElement("iframe");
+						elemIF.src = url;
+						elemIF.style.display = "none";
+						document.body.appendChild(elemIF);
+					}catch(e){
+						layer.msg("下载异常");
+					}
+				}
+
+				//重置密码
+				$(".reset").click(function() {
+					var obj = $(this);
+					layer.msg('你确定重置吗？', {
+						time: 0, //不自动关闭
+						btn: ['确定', '取消'],
+						yes: function(index) {
+							$.ajax({
+								url:"background/update.php",
+								type: 'GET',
+								data: {
+									table:"users",
+									id: obj.attr("data")
+								},
+								success: function(r) {
+									 var result = $.parseJSON(r);
+									if(result.result)//判断0还是1
+									{
+										layer.msg("重置成功！");
+									}
+									else
+									{
+										layer.msg("重置失败");
+									}
+
+								},
+								error:  function(){
+									layer.msg("数据发送失败，请检查网络链接！");
+								}
+							});
+							layer.close(index);
+						}
+					});
+				})
+				//删除用户
+				$(".del.glyphicon.glyphicon-remove.user").click(function() {
+					var id = $(this).attr("data");
+					layer.msg('你确定删除吗？', {
+						time: 0, //不自动关闭
+						btn: ['确定', '取消'],
+						yes: function(index) {
+							$.ajax({
+								url:"background/delete.php",
+								type: 'GET',
+								data: {
+									table: "users",
+									id: id
+								},
+								success: function(result) {
+									if(result==1)//判断0还是1
+									{
+										layer.msg("提交成功！");
+										obj.parent().parent().remove();
+									}
+									else
+									{
+										layer.msg(result);
+									}
+
+								},
+								error:  function(){
+									layer.msg("数据发送失败，请检查网络链接！");
+								}
+							});
+							layer.close(index);
+						}
+					});
+				})
+				//获取用户id
+				var user_id;
+				var user_obj;
+				$(".update.glyphicon.glyphicon-comment.user").click(function() {
+					user_obj = $(this);
+					user_id = $(this).attr("data");
+					var power = $(this).attr("power");
+					var id = user_obj.parent().siblings().eq(1).text();
+					var name = user_obj.parent().siblings().eq(2).text();
+					var sex = user_obj.parent().siblings().eq(3).text();
+					var classname = user_obj.parent().siblings().eq(4).text();
+					var year = user_obj.parent().siblings().eq(5).text();
+					var dorm = user_obj.parent().siblings().eq(6).text();
+					var teacher = user_obj.parent().siblings().eq(7).text();
+					var phone = user_obj.parent().siblings().eq(8).text();
+					$("#user-id").val(id);
+					$("#user-name").val(name);
+					$("#user-sex").val(sex);
+					$("#user-dorm").val(dorm);
+					$("#user-year").val(year);
+					$("#user-teacher").val(teacher);
+					$("#user-phone").val(phone);
+					$("#user-class").val(classname);
+					if(power == "1")
+					{
+						$(".user-power").each(function(){
+							this.checked=true
+						});
+					}
+					else{
+						$(".user-power").each(function(){
+							this.checked= false
+						});
+					}
+
+				})
+				//修改用户信息
+				$("#user-ok").click(function(){
+					if($("#user-id").val()==""||$("#user-name").val()==""||$("#user-class").val()==""||$("#user-year").val()==""||$("#user-phone").val()==""||$("#user-sex").val()==""||$("#user-dorm").val()==""||$("#user-teacher").val()==""||$("#user-power").val()=="")
+					{
+						layer.msg("请填写每一项哦!");
+					}else{
+						var powerval;
+						if($("#user-power").is(':checked')){
+							powerval = 1;
+						}
+						else
+						{
+							powerval = 0;
+						}
+						$.ajax({
+							url:"background/update.php",
+							type: 'GET',
+							data: {
+								table: "users",
+								id: user_id,
+								no: $("#user-id").val(),
+								username: $("#user-name").val(),
+								class: $("#user-class").val(),
+								dates: $("#user-year").val(),
+								sex: $("#user-sex").val(),
+								phone:$("#user-phone").val(),
+								dormitory: $("#user-dorm").val(),
+								instructor: $("#user-teacher").val(),
+								power: powerval
+
+							},
+							success: function(r) {
+								var result = $.parseJSON(r);
+								if(result.result)//判断0还是1
+								{
+									layer.msg("提交成功！");
+									$(".user.btn.btn-default").click();
+								}
+								else
+								{
+									layer.msg(result.mes);
+								}
+
+							},
+							error:  function(){
+								layer.msg("数据发送失败，请检查网络链接！");
+							}
+						});
+
+					}
+				})
+
+				//用户导入
+				$("#userinput-btn").click(function(){
+					$("#userinput").click();
+					$("#userinput").change(function(){
+						var formData = new FormData();
+						var name = $(this).val();
+						formData.append("file",$(this)[0].files[0]);
+						formData.append("name",name);
+						$.ajax({
+							url:"background/importUser.php",
+							type: 'POST',
+							data: formData,
+							processData : false,
+							contentType : false,
+							beforeSend:function(){
+								console.log("正在导入，请稍候");
+							},
+							success: function(r) {
+								var result = $.parseJSON(r);
+								if(result.result)//判断0还是1
+								{
+									layer.msg("导入成功！");
+								}
+								else
+								{
+									layer.msg(result.mes);
+								}
+
+							},
+							error:  function(){
+								layer.msg("数据发送失败，请检查网络链接！");
+							}
+						});
+					});
+				});
+			});
+		</script>
+	</head>
+
+	<body style="height:100%">
+	   <!--头部导航栏-->
+		<nav class="navbar navbar-default navbar-static-top">
+			<div class="container">
+				<ul class="nav navbar-nav">
+					<li class="active">
+						<a href="index.php" style="font-size: 18px;"><i class="glyphicon glyphicon-home"></i></a>
+					</li>
+					<li>
+						<a href="message.php">留言榜</a>
+					</li>
+					<li>
+						<a href="about.php">关于</a>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<!--未登录-->
+					<!--<li>
+						<a href="login.html">登陆</a>
+					</li>
+					<li>
+						<a href="register">注册</a>
+					</li>-->
+					<!--登陆成功后-->
+					<li>
+						<a>欢迎您，</a>
+					</li>
+					<li>
+						<a style="padding-left: 0px;"><{$user}></a>
+					</li>
+					<li>
+						<a href="out.php" style="padding-left: 0px;"><i class="glyphicon glyphicon-off" style="padding-right: 5px;"></i>注销</a>
+					</li>
+
+				</ul>
+			</div>
+		</nav>
+		<div class="container">
+			<div class="row row-fluid">
+				<!--左侧导航栏-->
+				<div class="col-md-2 col-sm-2 col-xs-2 col-xm-2 col-lg-2">
+					<ul class="nav nav-pills nav-stacked bg-warning">
+						<li role="presentation" <{if $active == 1}>class="active"<{/if}>>
+							<a href="#notice" id="notice-tab" role="tab" data-toggle="tab" aria-controls="notice" aria-expanded="true"><i class="glyphicon glyphicon-pencil" style="padding-right: 10px"></i>发布公告</a>
+						</li>
+						<li role="presentation" <{if $active == 2}>class="active"<{/if}>>
+							<a href="#repair" id="repair-tab" role="tab" data-toggle="tab" aria-controls="repair" aria-expanded="false"><i class="glyphicon glyphicon-check" style="padding-right: 10px"></i>报修处理</a>
+						</li>
+						<li role="presentation" <{if $active == 3}>class="active"<{/if}>>
+							<a href="#dorm" role="tab" id="core-tab" data-toggle="tab" aria-controls="dorm" aria-expanded="false"><i class="glyphicon glyphicon-file" style="padding-right: 10px"></i>评分管理</a>
+						</li>
+						<li role="presentation" <{if $active == 4}>class="active"<{/if}>>
+							<a href="#message" role="tab" id="message-tab" data-toggle="tab" aria-controls="message" aria-expanded="false"><i class="glyphicon glyphicon-envelope" style="padding-right: 10px"></i>查看留言</a>
+						</li>
+						<li role="presentation" <{if $active == 5}>class="active"<{/if}>>
+							<a href="#info" role="tab" id="userinfo-tab" data-toggle="tab" aria-controls="info" aria-expanded="false"><i class="glyphicon glyphicon-user" style="padding-right: 10px"></i>用户管理</a>
+						</li>
+						<li role="presentation" <{if $active == 6}>class="active"<{/if}>>
+							<a href="#changepwd" role="tab" id="psd-tab" data-toggle="tab" aria-controls="changepwd" aria-expanded="false"><i class="glyphicon glyphicon-refresh" style="padding-right: 10px"></i>修改密码</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-10 col-sm-10 col-xs-10 col-xm-10 col-lg-10 sidebtab-height bg-info">
+
+					<div id="myTabContent" class="tab-content">
+						<!--发布公告tab页-->
+						<div role="tabpanel" class="tab-pane fade <{if $active == 1}>active in<{/if}>" id="notice" aria-labelledby="notice-tab">
+							<div class="row tablepadding">
+								<div class="navbar-form navbar-right" role="search">
+
+									<button id="notice-draft" class="btn btn-default">保存为草稿</button>
+									<button id="notice-send" class="btn btn-default">提交</button>
+								</div>
+
+								<div class="row col-md-12">
+									<form class="navbar-form">
+										<label class="control-label" for="notice-title">公告标题&nbsp;</label>
+										<div class="form-group has-feedback">
+											<input type="text" id="notice-title" class="form-control title" placeholder="标题" style="width: 300px;">
+										</div>
+									</form>
+								</div>
+
+							</div>
+							<div id="note">请编辑你想要发布的内容……</div>
+							<div class="row col-md-12">
+								<form class="navbar-form navbar-right " role="search" >
+
+									<div class="form-group">
+										<input name="search1" type="text" class="form-control" placeholder="Search">
+									</div>
+									<button type="submit" class="btn btn-default">搜索</button>
+								</form>
+							</div>
+
+							<div id="noticeinfo" class="tablepadding">
+								<h4 class="text-center">公告记录</h4>
+								<table class="table table-hover">
+									<tr>
+										<th>序号</th>
+										<th>发布人</th>
+										<th>时间</th>
+										<th>标题</th>
+										<th>详情</th>
+										<th>编辑</th>
+										<th>删除</th>
+									</tr>
+									<{foreach from=$notice item=temp}>
+									<tr>
+										<th scope="row"><{$temp.top}></th>
+										<td><{$temp.name}></td>
+										<td><{$temp.create_time}></td>
+										<{if $temp.state == 1}>
+										<td>(草稿)<{$temp.title}></td>
+										<{else}>
+										<td><{$temp.title}></td>
+										<{/if}>
+										<td>
+											<a href="notice.php?id=<{$temp.id}>" class="glyphicon glyphicon-list-alt" data-toggle="modal"></a>
+										</td>
+										<td>
+											<a href="" class="editor glyphicon glyphicon-pencil notice" data-toggle="modal" data="<{$temp.id}>"></a>
+										</td>
+										<td>
+											<a class="del glyphicon glyphicon-remove notice" data="<{$temp.id}>"></a>
+										</td>
+									</tr>
+									<{/foreach}>
+								</table>
+							</div>
+							<nav aria-label="Page navigation" class="text-center">
+								<ul class="pagination">
+									<li>
+										<a href="?page1=<{$page1-1}><{if $search1 != null}>&search1=<{$search1}><{/if}>" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+									<{foreach from=$upPage1 item=temp}>
+									<li>
+										<a href="?page1=<{$temp}><{if $search1 != null}>&search1=<{$search1}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+									<li class="active">
+										<a href="#"><{$page1}></a>
+									</li>
+									<{foreach from=$pages1 item=temp}>
+									<li>
+										<a href="?page1=<{$temp}><{if $search1 != null}>&search1=<{$search1}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+									<li>
+										<a href="?page1=<{$page1+1}><{if $search1 != null}>&search1=<{$search1}><{/if}>" aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+						</div>
+						<!--报修记录tab页-->
+						<div role="tabpane2" class="tab-pane fade <{if $active == 2}>active in<{/if}>" id="repair" aria-labelledby="repair-tab">
+							<div class="row tablepadding">
+								<!--<form class="navbar-form navbar-left" role="search">-->
+									<button onclick="window.location.href='?active=2'" class="btn btn-default">最新报修</button>
+									<button onclick="window.location.href='?active=2&need=1'" class="btn btn-default">未处理</button>
+								<!--</form>-->
+
+								<form class="navbar-form navbar-right" role="search" >
+									<div class="form-group">
+
+										<input name="search2" type="text" class="form-control" placeholder="Search">
+									</div>
+									<button type="submit" class="btn btn-default">搜索</button>
+								</form>
+
+							</div>
+
+							<div id="repairinfo" class="tablepadding">
+								<h4 class="text-center">报修记录</h4>
+								<table class="table table-hover">
+									<tr>
+										<th>序号</th>
+										<th>宿舍号</th>
+										<th>联系电话</th>
+										<th>故障描述</th>
+										<th>备注</th>
+										<th>删除</th>
+										<th>登记</th>
+									</tr>
+									<{foreach from=$repair item=temp}>
+									<tr>
+										<th scope="row"><{$temp.top}></th>
+										<td><{$temp.dormitory}></td>
+										<td><{$temp.phone}></td>
+										<td><{$temp.content}></td>
+										<td>
+                                            <{if $temp.yon == 1}>已登记<{else}>未登记<{/if}>
+											<!--<a href="#edit" class="glyphicon glyphicon-pencil repair" data-toggle="modal" data="<{$temp.id}>"></a>-->
+										</td>
+										<td>
+											<a class="del glyphicon glyphicon-remove repair" data="<{$temp.id}>"></a>
+										</td>
+										<td>
+											<a class="<{if $temp.yon == 1}>enregister glyphicon glyphicon-ok repair gray<{else}>enregister glyphicon glyphicon-ok repair<{/if}>" data="<{$temp.id}>"></a>
+										</td>
+									</tr>
+									<{/foreach}>
+								</table>
+							</div>
+							<nav aria-label="Page navigation" class="text-center">
+								<ul class="pagination">
+									<li>
+										<a href="?page2=<{$page2-1}>&active=2<{if $need !=null}>&need=<{$need}><{/if}><{if $search2 != null}>&search2=<{$search2}><{/if}>" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+									<{foreach from=$upPage2 item=temp}>
+									<li>
+										<a href="?page2=<{$temp}>&active=2<{if $need !=null}>&need=<{$need}><{/if}><{if $search2 != null}>&search2=<{$search2}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+									<li class="active">
+										<a href="#"><{$page2}></a>
+									</li>
+									<{foreach from=$pages2 item=temp}>
+									<li>
+										<a href="?page2=<{$temp}>&active=2<{if $need !=null}>&need=<{$need}><{/if}><{if $search2 != null}>&search2=<{$search2}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+
+									<li>
+										<a href="?page2=<{$page2+1}>&active=2<{if $need !=null}>&need=<{$need}><{/if}><{if $search2 != null}>&search2=<{$search2}><{/if}>" aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+						</div>
+						<!--<div class="col-md-6 col-md-offset-3">
+								<div class="input-group">
+									<span class="input-group-addon" id="sizing-addon1">简要</span>
+									<input class="form-control input" type="text" placeholder="具体情况介绍" aria-describedby="sizing-addon1">
+								</div>
+								<div class="input-group">
+									<span class="input-group-addon" id="sizing-addon2">宿舍楼</span>
+									<select class="form-control input" aria-describedby="sizing-addon2" style="width:100px;">
+										<option value="">一号楼</option>
+										<option value="">二号楼</option>
+										<option value="">三号楼</option>
+										<option value="">四号楼</option>
+									</select>
+								</div>
+								<div class="radio">
+									<label>
+		                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>S区
+	                      </label>
+									<label>
+		                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">N区
+	                      </label>
+								</div>
+
+								<div class="input-group">
+									<span class="input-group-addon" id="sizing-addon3">手机号</span>
+									<input class="form-control input" type="tel" placeholder="手机号" aria-describedby="sizing-addon3">
+								</div>
+							</div>-->
+						<!--评分管理tab页-->
+						<div role="tabpanel" class="tab-pane fade <{if $active == 3}>active in<{/if}>" id="dorm" aria-labelledby="dorm-tab">
+							<div class="row tablepadding">
+								<div class="navbar-form navbar-left" role="search">
+									<form id="filter" class="navbar-form navbar-left">
+									 <select class="week form-control input filter" name="week">
+										<option value="0" style="display: none;">周次</option>
+										<option value="1">第1周</option>
+										<option value="2">第2周</option>
+										<option value="3">第3周</option>
+										<option value="4">第4周</option>
+									 </select>
+									<select class="department form-control input filter" name="department">
+										<option value="0" style="display: none;">系别</option>
+										<option value="计算机">计算机</option>
+										<option value="中文系">中文系</option>
+										<option value="旅游系">旅游系</option>
+										<option value="外语系">外语系</option>
+									</select>
+									<select class="year form-control input filter" name="year">
+										<option value="0" style="display: none;">年级</option>
+										<option value="2011">11级</option>
+										<option value="2012">12级</option>
+										<option value="2013">13级</option>
+										<option value="2014">14级</option>
+									</select>
+									<select class="sex form-control input filter" name="sex">
+										<option value="0" style="display: none;">性别</option>
+										<option value="男">男</option>
+										<option value="女">女</option>
+									</select>
+									<select class="sort form-control input filter" name="sort">
+										<option value="0" style="display: none;">排序</option>
+										<option value="1">按总分排序</option>
+										<option value="2">按时间排序</option>
+									</select>
+									<button id="filtersubmit" class="btn btn-default" type="submit" style="display: none">提交</button>
+									<input class="Excel btn btn-default output" type="button" value="导出Excel"/><input type="file" id="outputExcel" style="display: none;"/>
+									<input class="Excel btn btn-default input" type="button" value="导入Excel"/>
+									</form>
+
+									<form class="navbar-form navbar-right" role="search">
+										<div class="form-group">
+
+											<input name="search3" type="text" class="form-control" placeholder="Search">
+										</div>
+										<button type="submit" class="btn btn-default">搜索</button>
+									</form>
+									</div>
+							<div id="ranking" class="tablepadding">
+								<h4 class="text-center">宿舍排名</h4>
+								<table class="table table-hover">
+									<tr>
+										<th>排名</th>
+										<th>周次</th>
+										<th>宿舍号</th>
+										<th>年级</th>
+										<th>系别</th>
+										<th>性别</th>
+										<th>扣分</th>
+										<th>总分</th>
+										<th>删除</th>
+										<th>修改</th>
+									</tr>
+									<{foreach from=$grade item=temp}>
+									<tr>
+										<th scope="row"><{$temp.top}></th>
+										<td><{$temp.weekly}></td>
+										<td><{$temp.dormitory}></td>
+										<td><{$temp.year}></td>
+										<td><{$temp.department}></td>
+										<td><{$temp.sex}></td>
+										<td><{$temp.points}></td>
+										<td><{$temp.num}></td>
+										<td>
+											<a class="del glyphicon glyphicon-remove ranking" data="<{$temp.id}>"></a>
+										</td>
+										<td>
+											<a href="#edit" class="edit glyphicon glyphicon-pencil ranking" data-toggle="modal" data="<{$temp.id}>"></a>
+										</td>
+									</tr>
+									<{/foreach}>
+								</table>
+							</div>
+							<nav aria-label="Page navigation" class="text-center">
+								<ul class="pagination">
+									<li>
+										<a href="?page3=<{$page3-1}>&active=3<{if $week != ''}>&week=<{$week}><{/if}><{if $department != ''}>&department=<{$department}><{/if}>
+<{if $year != ''}>&year=<{$year}><{/if}>
+<{if $sex != ''}>&sex=<{$sex}><{/if}>
+<{if $sort != ''}>&sort=<{$sort}><{/if}>
+<{if $search3 != ''}>&search3=<{$search3}><{/if}>" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+									<{foreach from=$upPage3 item=temp}>
+									<li>
+										<a href="?page3=<{$temp}>&active=3<{if $week != ''}>&week=<{$week}><{/if}><{if $department != ''}>&department=<{$department}><{/if}>
+<{if $year != ''}>&year=<{$year}><{/if}>
+<{if $sex != ''}>&sex=<{$sex}><{/if}>
+<{if $sort != ''}>&sort=<{$sort}><{/if}>
+<{if $search3 != ''}>&search3=<{$search3}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+									<li class="active">
+										<a href="#"><{$page3}></a>
+									</li>
+									<{foreach from=$pages3 item=temp}>
+									<li>
+										<a href="?page3=<{$temp}>&active=3<{if $week != ''}>&week=<{$week}><{/if}><{if $department != ''}>&department=<{$department}><{/if}>
+<{if $year != ''}>&year=<{$year}><{/if}>
+<{if $sex != ''}>&sex=<{$sex}><{/if}>
+<{if $sort != ''}>&sort=<{$sort}><{/if}>
+<{if $search3 != ''}>&search3=<{$search3}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+
+									<li>
+										<a href="?page3=<{$page3+1}>&active=3<{if $week != ''}>&week=<{$week}><{/if}><{if $department != ''}>&department=<{$department}><{/if}>
+<{if $year != ''}>&year=<{$year}><{/if}>
+<{if $sex != ''}>&sex=<{$sex}><{/if}>
+<{if $sort != ''}>&sort=<{$sort}><{/if}>
+<{if $search3 != ''}>&search3=<{$search3}><{/if}>" aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+							</div>
+						</div>
+						<!--留言管理tab页-->
+						<div role="tabpanel" class="tab-pane fade <{if $active == 4}>active in<{/if}>" id="message" aria-labelledby="message-tab">
+							<div class="row tablepadding">
+								<!--<form class="navbar-form navbar-left" role="search">-->
+
+									<button onclick="window.location.href='?active=4'" class="btn btn-default">最新留言</button>
+									<button onclick="window.location.href='?active=4&need4=1'" class="btn btn-default">未回复</button>
+								<!--</form>-->
+
+								<form class="navbar-form navbar-right" role="search">
+									<div class="form-group">
+
+										<input name="search4" type="text" class="form-control" placeholder="Search">
+									</div>
+									<button type="submit" class="btn btn-default">搜索</button>
+								</form>
+
+							</div>
+
+							<div id="paiming" class="tablepadding">
+								<h4 class="text-center">留言记录</h4>
+								<table class="table table-hover">
+									<tr>
+										<th>序号</th>
+										<th>姓名</th>
+										<th>联系电话</th>
+										<th>时间</th>
+										<th>标题</th>
+										<th>内容</th>
+										<th>回复</th>
+										<th>删除</th>
+
+									</tr>
+									<{foreach from=$message item=temp}>
+									<tr>
+										<th scope="row"><{$temp.top}></th>
+										<td><{$temp.username}></td>
+										<td><{$temp.phone}></td>
+										<td><{$temp.create_time}></td>
+										<td><{$temp.title}></td>
+										<td>
+											<a href="#messagecon" class="show glyphicon glyphicon-list-alt message" data-toggle="modal" data="<{$temp.id}>"></a>
+										</td>
+										<td>
+											<a href="#reply" class="reply glyphicon glyphicon-comment message" data-toggle="modal" data="<{$temp.id}>"></a>
+										</td>
+										<td>
+											<a class="del glyphicon glyphicon-remove message" data="<{$temp.id}>" data="<{$temp.id}>"></a>
+										</td>
+
+									</tr>
+									<{/foreach}>
+								</table>
+							</div>
+							<nav aria-label="Page navigation" class="text-center">
+								<ul class="pagination">
+									<li>
+										<a href="?page4=<{$page4-1}>&active=4<{if $need4 != null}>&need4=<{$need4}><{/if}><{if $search4 != null}>&search4=<{$search4}><{/if}>" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+									<{foreach from=$upPage4 item=temp}>
+									<li>
+										<a href="?page4=<{$temp}>&active=4<{if $need4 != null}>&need4=<{$need4}><{/if}><{if $search4 != null}>&search4=<{$search4}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+									<li class="active">
+										<a href="#"><{$page4}></a>
+									</li>
+									<{foreach from=$pages4 item=temp}>
+									<li>
+										<a href="?page4=<{$temp}>&active=4<{if $need4 != null}>&need4=<{$need4}><{/if}><{if $search4 != null}>&search4=<{$search4}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+									<li>
+										<a href="?page4=<{$page4+1}>&active=4<{if $need4 != null}>&need4=<{$need4}><{/if}><{if $search4 != null}>&search4=<{$search4}><{/if}>" aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+						</div>
+						<!--用户管理tab页-->
+						<div role="tabpanel" class="tab-pane fade <{if $active == 5}>active in<{/if}>" id="info" aria-labelledby="info-tab">
+							<div class="row tablepadding">
+								<!--<form class="navbar-form navbar-left" role="search">-->
+
+									<button onclick="window.location.href='?active=5&need5=1'" class="btn btn-default">管理员</button>
+									<input type="button" id="userinput-btn" class="btn btn-default" value="用户导入"/>
+								     <input type="file" id="userinput" style="display: none;"/>
+								<!--</form>-->
+
+								<form class="navbar-form navbar-right" role="search">
+									<div class="form-group">
+
+										<input  name="search5" type="text" class="form-control" placeholder="Search">
+									</div>
+									<button type="submit" class="btn btn-default">搜索</button>
+								</form>
+
+							</div>
+
+							<div id="userinfo" class="tablepadding">
+								<h4 class="text-center">用户信息</h4>
+								<table class="table table-hover">
+									<tr>
+										<th>序号</th>
+										<th>学号</th>
+										<th>姓名</th>
+										<th>性别</th>
+										<th>班级</th>
+										<th>入学年份</th>
+										<th>宿舍号</th>
+										<th>辅导员</th>
+										<th>联系电话</th>
+										<th>密码重置</th>
+										<th>删除</th>
+										<th>修改</th>
+									</tr>
+									<{foreach from=$users item=temp}>
+									<tr>
+										<th scope="row"><{$temp.top}></th>
+										<td><{$temp.no}></td>
+										<td><{$temp.username}></td>
+										<{if $temp.sex != null}>
+										<td><{$temp.sex}></td>
+										<{else}>
+										<td>未填写</td>
+										<{/if}>
+										<{if $temp.class != null}>
+										<td><{$temp.class}></td>
+										<{else}>
+										<td>未填写</td>
+										<{/if}>
+										<{if $temp.dates != null}>
+										<td><{$temp.dates}></td>
+										<{else}>
+										<td>未填写</td>
+										<{/if}>
+										<{if $temp.dormitory != null}>
+										<td><{$temp.dormitory}></td>
+										<{else}>
+										<td>未填写</td>
+										<{/if}>
+										<{if $temp.instructor != null}>
+										<td><{$temp.instructor}></td>
+										<{else}>
+										<td>未填写</td>
+										<{/if}>
+										<td><{$temp.phone}></td>
+										<td>
+											<a id="reset" class="reset glyphicon glyphicon-refresh" data="<{$temp.id}>"></a>
+										</td>
+										<td>
+											<a class="del glyphicon glyphicon-remove user" data="<{$temp.id}>"></a>
+										</td>
+										<td>
+											<a href="#userupdate" class="update glyphicon glyphicon-comment user" data-toggle="modal" data="<{$temp.id}>" power="<{$temp.power}>"></a>
+										</td>
+									</tr>
+									<{/foreach}>
+								</table>
+							</div>
+							<nav aria-label="Page navigation" class="text-center">
+								<ul class="pagination">
+									<li>
+										<a href="?page5=<{$page5-1}>&active=5<{if $need5 != null}>&need5=<{$need5}><{/if}><{if $search5 != null}>&search5=<{$search5}><{/if}>" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+									<{foreach from=$upPage5 item=temp}>
+									<li>
+										<a href="?page5=<{$temp}>&active=5<{if $need5 != null}>&need5=<{$need5}><{/if}><{if $search5 != null}>&search5=<{$search5}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+									<li class="active">
+										<a href="#"><{$page5}></a>
+									</li>
+									<{foreach from=$pages5 item=temp}>
+									<li>
+										<a href="?page5=<{$temp}>&active=5<{if $need5 != null}>&need5=<{$need5}><{/if}><{if $search5 != null}>&search5=<{$search5}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+									<li>
+										<a href="?page5=<{$page5+1}>&active=5<{if $need5 != null}>&need5=<{$need5}><{/if}><{if $search5 != null}>&search5=<{$search5}><{/if}>" aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+						</div>
+						<!--修改密码tab页-->
+						<div role="tabpanel" class="tab-pane fade <{if $active == 6}>active in<{/if}>" id="changepwd" aria-labelledby="info-tab">
+							<div class="row" style="height: 600px;">
+								<div class="row">
+									<div class="col-md-6 col-md-offset-3 text-center">
+
+										<form class="form-horizontal" style="margin-top: 100px;">
+											<h3 class="col-sm-offset-3">修改密码</h3>
+											<div class="form-group has-feedback">
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="oldpw">旧密码</label>
+													<div class="col-sm-9">
+														<input type="password" class="form-control" id="oldpw" placeholder="旧密码" maxlength="15" required>
+													</div>
+												</div>
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="newpw1">新密码</label>
+													<div class="col-sm-9">
+														<input type="password" class="form-control" id="newpw1" placeholder="新密码" maxlength="15" required>
+													</div>
+												</div>
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="newpw2">确认密码</label>
+													<div class="col-sm-9">
+														<input type="password" class="form-control" id="newpw2" placeholder="确认密码" maxlength="15" required>
+														<div id="checkpw"></div>
+													</div>
+												</div>
+												<div class="row inputmargin col-sm-9 col-sm-offset-3">
+													<input type="button"  class="btn btn-default" value="确认修改" onclick="xiugaimima()">
+													<!--<button type="submit" class="btn btn-default" onclick="xiugaimima()">确认修改</button>-->
+												</div>
+											</div>
+										</form>
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+				<!--修改模态框-->
+				<div class="modal fade" id="edit">
+					<div class="modal-dialog ">
+						<div class="modal-content">
+							<div class="modal-header">
+								<a class="close" data-dismiss="modal">×</a>
+								<h3>修改记录</h3>
+							</div>
+								<div class="modal-body">
+									<div class="container-fluid">
+										<div class="col-md-10 col-md-offset-1">
+											<div class="form-group has-feedback l-height">
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="ranking-dorm">宿舍号</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" id="ranking-dorm" value="" maxlength="15" required disabled="disabled">
+													</div>
+												</div>
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="ranking-Score">扣分</label>
+													<div class="col-sm-9">
+														<input type="tel" class="form-control" id="ranking-Score" maxlength="15" required>
+													</div>
+												</div>
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="ranking-week">周次</label>
+													<div class="col-sm-9">
+														<input type="tel" class="form-control" id="ranking-week" maxlength="15" required>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<a class="ranking btn btn-default" data-dismiss="modal">关闭</a>
+									<button id="ranking-ok" type="button" class="btn btn-default">确定</button>
+								</div>
+						</div>
+					</div>
+				</div>
+				<!--留言内容模态框-->
+				<div class="modal fade" id="messagecon">
+					<div class="modal-dialog ">
+						<div class="modal-content">
+							<div class="modal-header">
+								<a class="close" data-dismiss="modal">×</a>
+								<h3 id="messagetitle"></h3>
+							</div>
+								<div class="modal-body" id="messagecontent">
+								</div>
+								<div class="modal-footer">
+									<a class="btn btn-default " data-dismiss="modal">关闭</a>
+								</div>
+						</div>
+					</div>
+				</div>
+				<!--回复模态框-->
+				<div class="modal fade" id="reply">
+					<div class="modal-dialog ">
+						<div class="modal-content">
+							<div class="modal-header">
+								<a class="close" data-dismiss="modal">×</a>
+								<h3>回复留言</h3>
+							</div>
+								<div class="modal-body">
+									<div class="container-fluid">
+										<div class="col-md-10 col-md-offset-1">
+											<div class="form-group has-feedback">
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="messageanswer"></label>
+													<div class="col-sm-12">
+														<textarea id="messageanswer" class="form-control" rows="3" maxlength="150" required></textarea>
+													</div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<a class="message btn btn-default" data-dismiss="modal">关闭</a>
+									<button id="messageanswer-ok" type="submit" class="btn btn-default">确定</button>
+								</div>
+						</div>
+					</div>
+				</div>
+				<!--用户修改模态框-->
+				<div class="modal fade" id="userupdate">
+					<div class="modal-dialog ">
+						<div class="modal-content">
+							<div class="modal-header">
+								<a class="close" data-dismiss="modal">×</a>
+								<h3>修改记录</h3>
+							</div>
+								<div class="modal-body">
+									<div class="container-fluid">
+										<div class="col-md-10 col-md-offset-1">
+											<div class="form-group has-feedback l-height">
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="user-id">学号</label>
+													<div class="col-sm-5">
+														<input type="text" class="form-control" id="user-id" value="" required disabled="disabled">
+													</div>
+												</div>
+
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="user-name">姓名</label>
+													<div class="col-sm-5">
+														<input type="text" class="form-control" id="user-name" value="" required>
+													</div>
+												</div>
+
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="user-class">班级</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" id="user-class" value="" maxlength="15" required>
+													</div>
+												</div>
+
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="user-year">入学年份</label>
+													<div class="col-sm-5">
+														<input type="date" class="form-control" id="user-year" value="2015-09-24" style="padding-right:0px;" required>
+													</div>
+												</div>
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="user-sex" style="">性别</label>
+													<div class="col-sm-4">
+														<select id="user-sex" class="form-control input">
+															<option value="未填写" style="display: none">未填写</option>
+															<option value="男">男</option>
+															<option value="女">女</option>
+														</select>
+													</div>
+												</div>
+
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="user-phone">联系电话</label>
+													<div class="col-sm-9">
+														<input type="tel" class="form-control" id="user-phone" placeholder="联系电话" maxlength="15" required>
+													</div>
+												</div>
+
+												<div class="row inputmargin">
+													<label class="control-label col-sm-2" for="user-dorm">宿舍号</label>
+													<div class="col-sm-4">
+														<input type="text" class="form-control" id="user-dorm" vale="" maxlength="15" required>
+													</div>
+													<label class="control-label col-sm-2" for="user-teacher">辅导员</label>
+													<div class="col-sm-4">
+														<input type="text" class="form-control" id="user-teacher" vale="" maxlength="15" required>
+													</div>
+												</div>
+
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="user-power">用户权限</label>
+													<label class="col-sm-9">
+                                                       <input id="user-power" class="user-power" value="1" type="checkbox">管理员
+                                                    </label>
+												</div>
+
+											</div>
+
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<a class="user btn btn-default" data-dismiss="modal">关闭</a>
+									<button id="user-ok" type="button" class="btn btn-default">确定</button>
+								</div>
+						</div>
+					</div>
+				</div>
+				<!---->
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+        var xmlhttp;
+        if(window.XMLHttpRequest)
+        {
+            xmlhttp = new XMLHttpRequest();
+        }
+        else{
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        function xiugaimima() {
+            if(xmlhttp){
+                url = "background/xiugai.php";
+                if(a('newpw1').value != a('newpw2').value){
+                    a('checkpw').innerHTML = '<font color="#FF0000">密码不一致</font>';
+                    return false;
+				}
+				var data = 'oldpw='+a('oldpw').value+'&newpw='+a('newpw1').value;
+//                var data="province="+$('sheng').value;
+//
+                xmlhttp.open('post',url,true);
+                xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                xmlhttp.onreadystatechange = xiugaimima2;
+                xmlhttp.send(data);
+            }
+        }
+
+        function xiugaimima2(){
+            if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+                var r = xmlhttp.responseText;
+                if(r == '1'){
+                    a('checkpw').innerHTML = '<font color="#0000FF">修改成功</font>';
+				}
+				else{
+                    a('checkpw').innerHTML = '<font color="#FF0000">修改失败</font>';
+                }
+			}
+            if(xmlhttp.readyState == 4 && xmlhttp.status!=200){
+                $('checkpw').innerHTML = '<font color="#FF0000">请求失败</font>';
+            }
+		}
+
+        function a(id) {
+            return document.getElementById(id);
+        }
+	</script>
+</html>

@@ -1,0 +1,91 @@
+.flex-direction-nav .flex-next {
+	background-position: 0 -70px;
+	right: 0;
+}
+
+.flex-direction-nav .flex-prev {
+	left: 0;
+}
+
+
+.flex-next {
+	opacity: 0.8;
+	filter: alpha(opacity=25);
+}
+
+.flex-prev {
+	opacity: 0.8;
+	filter: alpha(opacity=25);
+}
+
+.flex-next:hover,.flex-prev:hover {
+	opacity: 1;
+	filter: alpha(opacity=50);
+}
+.flex-direction-nav a {
+	width: 70px;
+	height: 70px;
+	line-height: 99em;
+	overflow: hidden;
+	margin: -35px 0 0;
+	display: block;
+	background: url(../img/ad_ctr.png) no-repeat;
+	position: absolute;
+	top: 50%;
+	z-index: 10;
+	cursor: pointer;
+	opacity: 0.5;
+	filter: alpha(opacity=0);
+	-webkit-transition: all .3s ease;
+	border-radius: 35px;
+}
+body{
+	background-color: #F1F1F1;
+}
+.back{
+	background-color: white;
+	padding:20px 10px 10px 10px;
+}
+.text{
+	background-color: #000000;
+}
+.middle{
+     display: table-cell;
+     vertical-align: middle;
+            }
+.listnew{
+	padding: 10px;
+}
+.answer{
+	font-size: 12px;
+	color: #8C8C8C;
+	background-color: #f5f5f5;
+}
+
+.listicon{
+	padding-right: 20px;
+}
+
+.inputmargin{
+	margin-top: 20px;
+}
+.tablepadding{
+	padding: 20px 20px 20px;
+}
+#paiming .table th, .table td { 
+text-align: center;
+vertical-align: middle!important;
+}
+.table th, .table td {
+	text-align: center;
+	vertical-align: middle!important;
+}
+.l-height{
+	line-height: 34px;
+}
+.title{
+	width: 300px;
+}
+.gray{
+	color:#c7c7c7;
+}

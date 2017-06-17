@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+		<title>宿舍卫生评比管理系统</title>
+
+		<!-- Bootstrap -->
+		<link rel="shortcut icon" type="image/x-icon" href="logo.png" media="screen" />
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="js/jquery-3.1.1.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="js/bootstrap.min.js"></script>
+	</head>
+
+	<body>
+		<nav class="navbar navbar-default navbar-static-top">
+			<div class="container">
+				<ul class="nav navbar-nav">
+					<li>
+						<a href="index.php" style="font-size: 18px;"><i class="glyphicon glyphicon-home"></i></a>
+					</li>
+					<li class="active">
+						<a href="message.php">留言榜</a>
+					</li>
+					<li>
+						<a href="about.php">关于</a>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<{if $user == null}>
+					<li>
+						<a href="login.php">登陆</a>
+					</li>
+					<li>
+						<a href="register.php">注册</a>
+					</li>
+					<{else}>
+					<li>
+						<a>欢迎您，</a>
+					</li>
+					<li>
+						<a style="padding-left: 0px;"><{$user}></a>
+					</li>
+					<li>
+						<a href="out.php" style="padding-left: 0px;"><i class="glyphicon glyphicon-off" style="padding-right: 5px;"></i>注销</a>
+					</li>
+					<{/if}>
+
+				</ul>
+			</div>
+		</nav>
+		<div class="container">
+			<div id="" class="col-md-8">
+			<{foreach from=$arr item=temp}>
+				<div class="<{$temp.class}>">
+					<div class="panel-heading">
+						<h3 class="panel-title"><i class="glyphicon glyphicon-tags" style="padding-right: 10px;"></i><{$temp.title}><small class="pull-right"><i class="glyphicon glyphicon-time"></i><{$temp.create_time}></small></h3>
+
+					</div>
+					<div class="panel-body">
+						<{$temp.content}>
+					</div>
+					<div class="panel-footer text-right">
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+							<!--<span class="glyphicon glyphicon-comment" aria-hidden="true"></span>-->
+						<!--</button>-->
+						<button onclick="up('<{$temp.id}>')" type="button" class="btn btn-info btn-xs" aria-label="Left Align">
+							<span id="<{$temp.id}>" class="glyphicon glyphicon-thumbs-up" aria-hidden="true"><{$temp.up}></span>
+						</button>
+						<button onclick="down('<{$temp.id}>')" type="button" class="btn btn-info btn-xs" aria-label="Left Align">
+							<span id="<{$temp.id}>z" class="glyphicon glyphicon-thumbs-down" aria-hidden="true"><{$temp.down}></span>
+						</button>
+
+					</div>
+					<!-- List group -->
+					<{if $temp.answer != ''}>
+					<ul class="list-group">
+						<li class="list-group-item answer"><strong>管理员：</strong><{$temp.answer}><small class="pull-right">2017\8\17</small></li>
+
+					</ul>
+					<{/if}>
+				</div>
+				<{/foreach}>
+
+				<!--<div class="panel panel-success">-->
+					<!--<div class="panel-heading">-->
+						<!--<h3 class="panel-title">宿舍大消息！<small class="pull-right">2017\8\17</small></h3>-->
+					<!--</div>-->
+					<!--<div class="panel-body">-->
+						<!--为面板中不需要边框的表格添加 .table 类，是整个面板看上去更像是一个整体设计。 如果是带有 .panel-body 的面板，我们为表格的上方添加一个边框，看上去有分隔效果。-->
+					<!--</div>-->
+					<!--<div class="panel-footer text-right">-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-comment" aria-hidden="true"></span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">181</span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">192</span>-->
+        <!--</button>-->
+
+					<!--</div>-->
+				<!--</div>-->
+
+				<!--<div class="panel panel-info">-->
+					<!--<div class="panel-heading">-->
+						<!--<h3 class="panel-title">宿舍怎么没水呢?<small class="pull-right">2017\8\17</small></h3>-->
+
+					<!--</div>-->
+					<!--<div class="panel-body">-->
+						<!--像其他组件一样，可以简单地通过加入有情境效果的状态类，给特定的内容使用更针对特定情境的面版。-->
+					<!--</div>-->
+					<!--<div class="panel-footer text-right">-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-comment" aria-hidden="true"></span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">181</span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">192</span>-->
+        <!--</button>-->
+
+					<!--</div>-->
+					<!--&lt;!&ndash; List group &ndash;&gt;-->
+					<!--<ul class="list-group">-->
+						<!--<li class="list-group-item answer"><strong>大白：</strong>真的则很难的！<small class="pull-right">2017\8\17</small></li>-->
+						<!--<li class="list-group-item text-center answer">全部展开<i class="glyphicon glyphicon-chevron-down"></i></li>-->
+
+					<!--</ul>-->
+				<!--</div>-->
+
+				<!--<div class="panel panel-warning">-->
+					<!--<div class="panel-heading">-->
+						<!--<h3 class="panel-title">4S622出手！<small class="pull-right">2017\8\17</small></h3>-->
+					<!--</div>-->
+					<!--<div class="panel-body">-->
+						<!--根据被嵌入内容的外部容器的宽度，自动创建一个固定的比例，从而让浏览器自动确定视频或 slideshow 的尺寸，能够在各种设备上缩放。-->
+					<!--</div>-->
+					<!--<div class="panel-footer text-right">-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-comment" aria-hidden="true"></span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">181</span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">192</span>-->
+        <!--</button>-->
+
+					<!--</div>-->
+					<!--&lt;!&ndash; List group &ndash;&gt;-->
+					<!--<ul class="list-group">-->
+						<!--<li class="list-group-item answer"><strong>大白：</strong>真的则很难的！<small class="pull-right">2017\8\17</small></li>-->
+						<!--<li class="list-group-item text-center answer">全部展开<i class="glyphicon glyphicon-chevron-down"></i></li>-->
+
+					<!--</ul>-->
+				<!--</div>-->
+
+				<!--<div class="panel panel-success">-->
+					<!--<div class="panel-heading">-->
+						<!--<h3 class="panel-title">宿舍大消息！<small class="pull-right">2017\8\17</small></h3>-->
+					<!--</div>-->
+					<!--<div class="panel-body">-->
+						<!--为面板中不需要边框的表格添加 .table 类，是整个面板看上去更像是一个整体设计。 如果是带有 .panel-body 的面板，我们为表格的上方添加一个边框，看上去有分隔效果。-->
+					<!--</div>-->
+					<!--<div class="panel-footer text-right">-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-comment" aria-hidden="true"></span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">181</span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">192</span>-->
+        <!--</button>-->
+
+					<!--</div>-->
+					<!--&lt;!&ndash; List group &ndash;&gt;-->
+					<!--<ul class="list-group">-->
+						<!--<li class="list-group-item answer"><strong>大白：</strong>真的则很难的！<small class="pull-right">2017\8\17</small></li>-->
+						<!--<li class="list-group-item text-center answer">全部展开<i class="glyphicon glyphicon-chevron-down"></i></li>-->
+
+					<!--</ul>-->
+				<!--</div>-->
+
+				<!--<div class="panel panel-info">-->
+					<!--<div class="panel-heading">-->
+						<!--<h3 class="panel-title">宿舍怎么没水呢<small class="pull-right">2017\8\17</small></h3>-->
+					<!--</div>-->
+					<!--<div class="panel-body">-->
+						<!--像其他组件一样，可以简单地通过加入有情境效果的状态类，给特定的内容使用更针对特定情境的面版。-->
+					<!--</div>-->
+					<!--<div class="panel-footer text-right">-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-comment" aria-hidden="true"></span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">181</span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">192</span>-->
+        <!--</button>-->
+
+					<!--</div>-->
+					<!--&lt;!&ndash; List group &ndash;&gt;-->
+					<!--<ul class="list-group">-->
+						<!--<li class="list-group-item answer"><strong>大白：</strong>真的则很难的！<small class="pull-right">2017\8\17</small></li>-->
+						<!--<li class="list-group-item text-center answer">全部展开<i class="glyphicon glyphicon-chevron-down"></i></li>-->
+
+					<!--</ul>-->
+				<!--</div>-->
+
+				<!--<div class="panel panel-warning">-->
+					<!--<div class="panel-heading">-->
+						<!--<h3 class="panel-title">4S622出手！<small class="pull-right">2017\8\17</small></h3>-->
+					<!--</div>-->
+					<!--<div class="panel-body">-->
+						<!--根据被嵌入内容的外部容器的宽度，自动创建一个固定的比例，从而让浏览器自动确定视频或 slideshow 的尺寸，能够在各种设备上缩放。-->
+					<!--</div>-->
+					<!--<div class="panel-footer text-right">-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-comment" aria-hidden="true"></span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">181</span>-->
+        <!--</button>-->
+						<!--<button type="button" class="btn btn-info btn-xs" aria-label="Left Align">-->
+      <!--<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">192</span>-->
+        <!--</button>-->
+
+					<!--</div>-->
+					<!--&lt;!&ndash; List group &ndash;&gt;-->
+					<!--<ul class="list-group">-->
+						<!--<li class="list-group-item answer"><strong>大白：</strong>真的则很难的！<small class="pull-right">2017\8\17</small></li>-->
+						<!--<li class="list-group-item text-center answer">全部展开<i class="glyphicon glyphicon-chevron-down"></i></li>-->
+
+					<!--</ul>-->
+				<!--</div>-->
+			</div>
+
+			<div class="col-md-4">
+				<div class="panel panel-warning">
+					<div class="panel-heading">
+						<h3 class="panel-title text-center">最新公告</h3>
+					</div>
+
+					<!-- List group -->
+					<ul class="list-group">
+						<{foreach from=$arr2 item=temp}>
+						<div style="margin: 5px;border: inset;background-color: #d6eaea;">
+						<div class="panel-body">
+							<a href="notice.php?id=<{$temp.id}>"><i class="glyphicon glyphicon-link" style="padding-right: 10px"></i><{$temp.title}></a>
+						</div>
+						<li class="list-group-item  text-right">
+
+							<small class="answer"><i class="glyphicon glyphicon-time"></i><{$temp.create_time}></small></li>
+							</div>
+						<{/foreach}>
+						<!--<div class="panel-body">-->
+							<!--根据被嵌入内容的外部容器的宽度，自动创建一个固定的比例，从而让浏览器自动确定视频或 slideshow 的尺寸，能够在各种设备上缩放。-->
+						<!--</div>-->
+						<!--<li class="list-group-item  text-right">-->
+
+							<!--<small class="answer">2017\8\17</small></li>-->
+						<!--<div class="panel-body">-->
+							<!--根据被嵌入内容的外部容器的宽度，自动创建一个固定的比例，从而让浏览器自动确定视频或 slideshow 的尺寸，能够在各种设备上缩放。-->
+						<!--</div>-->
+						<!--<li class="list-group-item  text-right">-->
+
+							<!--<small class="answer">2017\8\17</small></li>-->
+						<!--<div class="panel-body">-->
+							<!--根据被嵌入内容的外部容器的宽度，自动创建一个固定的比例，从而让浏览器自动确定视频或 slideshow 的尺寸，能够在各种设备上缩放。-->
+						<!--</div>-->
+						<!--<li class="list-group-item  text-right">-->
+
+							<!--<small class="answer">2017\8\17</small></li>-->
+
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	</body>
+	<script type="text/javascript">
+        var xmlhttp;
+        if(window.XMLHttpRequest)
+        {
+            xmlhttp = new XMLHttpRequest();
+        }
+        else{
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+		var id2;
+        //点赞
+        function up(id){
+            if(xmlhttp){
+                var url = "background/up.php?id="+id;
+                //打开请求
+                xmlhttp.open("get",url,true);
+                //指定回调函数,chuli是函数名
+                xmlhttp.onreadystatechange = up2;
+                xmlhttp.send();
+				id2 = id;
+            }
+		}
+		
+		function up2() {
+            if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+                var text = xmlhttp.responseText;
+                if(text != 'erro'){
+                    $(id2).innerHTML=text;
+				}
+				else{
+                    alert('出错了！！！');
+				}
+			}
+            if(xmlhttp.readyState == 4 && xmlhttp.status!=200){
+                alert('网络不是很流畅！！！');
+            }
+        }
+
+        //踩
+		function down(id) {
+            if(xmlhttp){
+                var url = "background/down.php?id="+id;
+                //打开请求
+                xmlhttp.open("get",url,true);
+                //指定回调函数,chuli是函数名
+                xmlhttp.onreadystatechange = down2;
+                xmlhttp.send();
+                id2 = id;
+            }
+        }
+
+        function down2() {
+            if(xmlhttp.readyState == 4 && xmlhttp.status==200){
+                var text = xmlhttp.responseText;
+                if(text != 'erro'){
+                    $(id2+'z').innerHTML=text;
+                }
+                else{
+                    alert('出错了！！！');
+                }
+            }
+            if(xmlhttp.readyState == 4 && xmlhttp.status!=200){
+                alert('网络不是很流畅！！！');
+            }
+        }
+
+        function $(id) {
+            return document.getElementById(id);
+        }
+	</script>
+</html>

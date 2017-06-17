@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="logo.png" media="screen" />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>宿舍卫生评比管理系统</title>
+
+    <!-- Bootstrap -->
+    <link rel="shortcut icon" type="image/x-icon" href="logo.png" media="screen" />
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+    <!-- php5 shim and Respond.js for IE8 support of php5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="js/php5shiv.min.js"></script>
+    <script src="js/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+<body>
+<nav class="navbar navbar-default navbar-static-top">
+    <div class="container">
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="index.php" style="font-size: 18px;"><i class="glyphicon glyphicon-home"></i></a>
+            </li>
+            <li>
+                <a href="message.php">留言榜</a>
+            </li>
+            <li class="active">
+                <a href="about.php">关于</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <{if $user == null}>
+            <li>
+                <a href="login.php">登陆</a>
+            </li>
+            <li>
+                <a href="register.php">注册</a>
+            </li>
+            <{else}>
+            <li>
+                <a>欢迎您，</a>
+            </li>
+            <li>
+                <a style="padding-left: 0px;"><{$user}></a>
+            </li>
+            <li>
+                <a href="out.php" style="padding-left: 0px;"><i class="glyphicon glyphicon-off" style="padding-right: 5px;"></i>注销</a>
+            </li>
+            <{/if}>
+
+            <!--<li>
+                <a>欢迎您，</a>
+            </li>
+            <li>
+                <a href="manage_user.php" style="padding-left: 0px;">小明</a>
+            </li>-->
+
+        </ul>
+    </div>
+</nav>
+<div class="container" style="min-height: 800px;">
+  <div class="jumbotron">
+
+      <h1>THANKS, EVERY TEACHER !</h1>
+      <p>毕业设计结束了，通过设计，学生深刻领会到基础的重要性，毕业设计不仅仅能帮助学生检验大学四年的学习成果，更多的是毕业设计可以帮助我们更加清楚的认识自我，磨练学生的意志与耐性，这会为学生日后的工作和生活带来很大的帮助。</p>
+      <p>设计者：沈晓彬、林秋余</p>
+      <p style="text-align: right;">时间:2017/6/1</p>
+    </div>
+  </div>
+</body>
+</html>

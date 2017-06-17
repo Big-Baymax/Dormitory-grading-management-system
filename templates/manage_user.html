@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+		<title>宿舍卫生评比管理系统_用户界面</title>
+
+		<!-- Bootstrap -->
+		<link rel="shortcut icon" type="image/x-icon" href="logo.png" media="screen" />
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+		<link rel="stylesheet" type="text/css" href="css/summernote.css"/>
+		
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="js/jquery-3.1.1.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/layer.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				//textarea字数限制
+				$('textarea').each(function() {
+					var ta = $(this),
+						p = ta.parent(),
+						ml = parseInt(ta.attr('maxlength')),
+						v = ta.val(),
+						h = ta.attr('placeholder');
+					if(v == h) v = '';
+					if(h && ml) {
+						//var sp = '<span style="bottom: 10px;position: absolute;right: -10px;">'+v.length+'/'+ml+'</span>';
+						p.css({ 'position': 'relative' });
+						//ta.before(sp);
+						ta.bind('click keyup', function() {
+							var m = $(this),
+								v1 = m.val();
+							if(v1.length > ml) {
+								m.val(v1.substring(0, ml))
+							}
+							//m.prev().text(m.val().length + '/' + ml);
+							$("#xxxx").text(ml - m.val().length);
+						});
+					}
+				});
+				//提交报修申请
+				$("#repair-ok").click(function(){
+					if($("#repair-dorm").val()==""||$("requir-phone").val()==""||$("#repair-sn  input:radio:checked").val()==""||$("#repair-id").val()==""||$("#repair-con").val()=="")
+					{
+						layer.msg("请填写每一项！");
+					}
+					else{
+						$.ajax({
+							url:"background/save.php",
+							type: 'POST',
+							data: {
+								dormitory1: $("#repair-dorm").val(),
+								phone: $("#requir-phone").val(),
+								dormitory2: $("#repair-sn  input:radio:checked").val(),
+								dormitory3: $("#repair-id").val(),
+								content: $("#repair-con").val()
+							},
+							success: function(result) {
+								//var result = $.parseJSON(result);
+								if(result==1)//判断0还是1
+								{
+									layer.msg("提交成功！");
+								}
+								else
+								{
+									layer.msg(result);
+								}
+
+							},
+							error:  function(){
+								layer.msg("数据发送失败，请检查网络链接！");
+							}
+						});
+					}
+
+				});
+				//提交留言信息
+				$("#message-ok").click(function(){
+					if($("#message-title").val()==""||$("#message-con").val()==""||$("#message-phone").val()=="")
+					{
+						layer.msg("请填写每一项！");
+					}
+					else{
+						$.ajax({
+							url:"background/save.php?id=2",
+							type: 'POST',
+							data: {
+								title: $("#message-title").val(),
+								content: $("#message-con").val(),
+								phone: $("#message-phone").val()
+							},
+							success: function(result) {
+								if(result==1)//判断0还是1
+								{
+									layer.msg("提交成功！");
+								}
+								else
+								{
+									layer.msg(result);
+								}
+
+							},
+							error:  function(){
+								layer.msg("数据发送失败，请检查网络链接！");
+							}
+						});
+					}
+
+				});
+				//提交个人信息修改
+				$("#info-ok").click(function(){
+					if($("#info-id").val()==""||$("#info-name").val()==""||$("#info-class").val()==""||$("#info-year").val()==""||$("#info-sex").val()==""||$("#info-dorm").val()==""||$("#info-teacher").val()==""||$("#info-phone").val()=="")
+					{
+						layer.msg("请填写每一项！");
+					}
+					else{
+						$.ajax({
+							url:"background/update.php",
+							type: 'GET',
+							data: {
+								table: "users",
+								id:"<{$info[0].id}>",
+								no:$("#info-id").val(),
+								username: $("#info-name").val(),
+								class: $("#info-class").val(),
+								dates: $("#info-year").val(),
+								sex: $("#info-name").val(),
+								dormitory: $("#info-dorm").val(),
+								instructor: $("#info-teacher").val(),
+								phone: $("#info-phone").val()
+							},
+							success: function(r) {
+								var result = $.parseJSON(r);
+
+								if(result.result)//判断0还是1
+								{
+									layer.msg("提交成功！");
+								}
+								else
+								{
+									layer.msg(result.mes);
+								}
+
+							},
+							error:  function(){
+								layer.msg("数据发送失败，请检查网络链接！");
+							}
+						});
+					}
+
+				});
+				//修改密码
+				$("#pwd-ok").click(function(){
+					if($("#opwd").val()==""||$("#zpwd").val()==""||$("#npwd").val()==""){
+						layer.msg("请填写每一项哦！");
+					}else{
+						$.ajax({
+							url:"background/xiugai.php",
+							type: 'POST',
+							data: {
+								oldpw:$("#opwd").val(),
+								newpw:$("#npwd").val(),
+								newpw2:$("#zpwd").val()
+							},
+							success: function(result) {
+								if(result==1)//判断0还是1
+								{
+									layer.msg("提交成功！");
+								}
+								else
+								{
+									layer.msg(result);
+								}
+
+							},
+							error:function(){
+								layer.msg("数据发送失败，请检查网络链接！");
+							}
+						});
+					}
+				});
+				//过滤评分
+				//初始化
+				var sortweek= <{if $week != ''}><{$week}><{else}>0<{/if}>,sortyear = <{if $year != ''}>"<{$year}>"<{else}>0<{/if}>,sortdepartment = <{if $department != ''}>"<{$department}>"<{else}>0<{/if}>,sortsex =  <{if $sex != ''}>"<{$sex}>"<{else}>0<{/if}>,sortpoints = 0,sortsort = <{if $sort != ''}>"<{$sort}>"<{else}>0<{/if}>;
+
+
+				$(".week.form-control.input.filter").val(sortweek);
+				$(".year.form-control.input.filter").val(sortyear);
+				$(".department.form-control.input.filter").val(sortdepartment);
+				$(".sex.form-control.input.filter").val(sortsex);
+				$(".points.form-control.input.filter").val(sortpoints);
+				$(".sort.form-control.input.filter").val(sortsort);
+				//选择框改变事件
+				$(".form-control.input.filter").change(function(){
+							$("#filter").submit();
+						}
+				);
+
+			});
+		</script>
+	</head>
+
+	<body style="height: 1900px">
+	<!--头部导航栏-->
+		<nav class="navbar navbar-default navbar-static-top">
+			<div class="container">
+				<ul class="nav navbar-nav">
+					<li class="active">
+						<a href="index.php" style="font-size: 18px;"><i class="glyphicon glyphicon-home"></i></a>
+					</li>
+					<li>
+						<a href="message.php">留言榜</a>
+					</li>
+					<li>
+						<a href="about.php">关于</a>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<!--未登录-->
+					<!--<li>
+						<a href="login.html">登陆</a>
+					</li>
+					<li>
+						<a href="register">注册</a>
+					</li>-->
+					<!--登陆成功后-->
+					<li>
+						<a>欢迎您，</a>
+					</li>
+					<li>
+						<a href="manage_user.html" style="padding-left: 0px;"><{$user}></a>
+					</li>
+					<li>
+						<a href="out.php" style="padding-left: 0px;"><i class="glyphicon glyphicon-off" style="padding-right: 5px;"></i>注销</a>
+					</li>
+
+				</ul>
+			</div>
+		</nav>
+	     <!--主容器-->
+		<div class="container">
+			<div class="row row-fluid">
+				<!--左部导航栏-->
+				<div class="col-md-2 col-sm-2 col-xs-2 col-xm-2 col-lg-2">
+					<ul class="nav nav-pills nav-stacked bg-warning">
+						<li role="presentation" class="<{if $active != 3}>active<{/if}>">
+							<a href="#repair" id="home-tab" role="tab" data-toggle="tab" aria-controls="repair" aria-expanded="true"><i class="glyphicon glyphicon-check" style="padding-right: 10px"></i>快速报修</a>
+						</li>
+						<li role="presentation" class="<{if $active == 3}>active<{/if}>">
+							<a href="#dorm" role="tab" data-toggle="tab" aria-controls="dorm" aria-expanded="false"><i class="glyphicon glyphicon-file" style="padding-right: 10px"></i>宿舍排名</a>
+						</li>
+						<li role="presentation" class="">
+							<a href="#message" role="tab" data-toggle="tab" aria-controls="message" aria-expanded="false"><i class="glyphicon glyphicon-envelope" style="padding-right: 10px"></i>发布留言</a>
+						</li>
+						<li role="presentation" class="">
+							<a href="#info" role="tab" data-toggle="tab" aria-controls="info" aria-expanded="false"><i class="glyphicon glyphicon-user" style="padding-right: 10px"></i>个人信息</a>
+						</li>
+						<li role="presentation" class="">
+							<a href="#changepwd" role="tab" data-toggle="tab" aria-controls="changepwd" aria-expanded="false"><i class="glyphicon glyphicon-refresh" style="padding-right: 10px"></i>修改密码</a>
+						</li>
+					</ul>
+				</div>
+				<!--tab页面区-->
+				<div class="col-md-10 col-sm-10 col-xs-10 col-xm-10 col-lg-10 sidebtab-height bg-info">
+					<div id="myTabContent" class="tab-content">
+						<!--报修页-->
+						<div role="tabpanel" class="tab-pane fade <{if $active != 3}>active in<{/if}>" id="repair" aria-labelledby="repair-tab">
+							<div class="row" style="height: 600px;">
+								<div class="row">
+									<div class="col-md-6 col-md-offset-3 text-center">
+
+										<div class="form-horizontal" style="margin-top: 100px;">
+											<h3 class="col-sm-offset-3">故障报修</h3>
+											<div class="form-group has-feedback">
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="requir-phone">手机号码</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" id="requir-phone" placeholder="手机号" maxlength="11" required>
+													</div>
+												</div>
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="repair-dorm">宿舍楼</label>
+													<div class="col-sm-3">
+														<select id="repair-dorm" class="form-control input" style="padding-right:0px;">
+															<option value="1">一号楼</option>
+															<option value="2">二号楼</option>
+															<option value="3">三号楼</option>
+															<option value="4">四号楼</option>
+														</select>
+													</div>
+													<div class="col-sm-3">
+														<div class="radio" id="repair-sn" >
+															<label><input type="radio" name="optionsRadios" value="s" checked>S区</label>
+															<label><input type="radio" name="optionsRadios" value="n">N区</label>
+														</div>
+													</div>
+													<div class="col-sm-3">
+														<input id="repair-id" class="form-control input" type="text" placeholder="宿舍号" style="padding-right:0px;" required>
+													</div>
+												</div>
+												<div class="row inputmargin">
+													<label id="requir-ok" class="control-label col-sm-3 inputmargin" for="repair-con">故障描述</label>
+
+													<div class="col-sm-9">
+														<textarea id="repair-con" class="form-control" rows="3" maxlength="36" required></textarea>
+													</div>
+												</div>
+												<div class="row inputmargin col-sm-9 col-sm-offset-3">
+													<button id="repair-ok" type="button" class="btn btn-default">提交</button>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+							<!--<div class="col-md-6 col-md-offset-3">
+								<div class="input-group">
+									<span class="input-group-addon" id="sizing-addon1">简要</span>
+									<input class="form-control input" type="text" placeholder="具体情况介绍" aria-describedby="sizing-addon1">
+								</div>
+								<div class="input-group">
+									<span class="input-group-addon" id="sizing-addon2">宿舍楼</span>
+									<select class="form-control input" aria-describedby="sizing-addon2" style="width:100px;">
+										<option value="">一号楼</option>
+										<option value="">二号楼</option>
+										<option value="">三号楼</option>
+										<option value="">四号楼</option>
+									</select>
+								</div>
+								<div class="radio">
+									<label>
+		                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>S区
+	                      </label>
+									<label>
+		                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">N区
+	                      </label>
+								</div>
+
+								<div class="input-group">
+									<span class="input-group-addon" id="sizing-addon3">手机号</span>
+									<input class="form-control input" type="tel" placeholder="手机号" aria-describedby="sizing-addon3">
+								</div>
+							</div>-->
+						</div>
+						<!--评分查询-->
+						<div role="tabpanel" class="tab-pane fade <{if $active == 3}>active in<{/if}>" id="dorm" aria-labelledby="dorm-tab">
+							<div class="row tablepadding">
+								<form id="filter" class="navbar-form navbar-left">
+									<select class="week form-control input filter" name="week">
+										<option value="0" style="display: none;">周次</option>
+										<option value="1">第1周</option>
+										<option value="2">第2周</option>
+										<option value="3">第3周</option>
+										<option value="4">第4周</option>
+									</select>
+									<select class="department form-control input filter" name="department">
+										<option value="0" style="display: none;">系别</option>
+										<option value="计算机">计算机</option>
+										<option value="中文系">中文系</option>
+										<option value="旅游系">旅游系</option>
+										<option value="外语系">外语系</option>
+									</select>
+									<select class="year form-control input filter" name="year">
+										<option value="0" style="display: none;">年级</option>
+										<option value="2011">11级</option>
+										<option value="2012">12级</option>
+										<option value="2013">13级</option>
+										<option value="2014">14级</option>
+									</select>
+									<select class="sex form-control input filter" name="sex">
+										<option value="0" style="display: none;">性别</option>
+										<option value="男">男</option>
+										<option value="女">女</option>
+									</select>
+									<select class="sort form-control input filter" name="sort">
+										<option value="0" style="display: none;">排序</option>
+										<option value="1">按总分排序</option>
+										<option value="2">按时间排序</option>
+									</select>
+									<button id="filtersubmit" class="btn btn-default" type="submit" style="display: none">提交</button>
+								</form>
+
+								<form class="navbar-form navbar-right" role="search">
+									<div class="form-group">
+
+										<input name="search3" type="text" class="form-control" placeholder="Search">
+									</div>
+									<button type="submit" class="btn btn-default">搜索</button>
+								</form>
+
+							</div>
+
+							<div id="paiming" class="tablepadding">
+								<h4 class="text-center">宿舍排名</h4>
+								<table class="table table-hover">
+									<tr>
+										<th>排名</th>
+										<th>周次</th>
+										<th>宿舍号</th>
+										<th>年级</th>
+										<th>系别</th>
+										<th>性别</th>
+										<th>扣分</th>
+										<th>总分</th>
+									</tr>
+									<{foreach from=$grade item=temp}>
+									<tr>
+										<th scope="row"><{$temp.top}></th>
+										<td><{$temp.weekly}></td>
+										<td><{$temp.dormitory}></td>
+										<td><{$temp.year}></td>
+										<td><{$temp.department}></td>
+										<td><{$temp.sex}></td>
+										<td><{$temp.points}></td>
+										<td><{$temp.num}></td>
+									</tr>
+									<{/foreach}>
+
+								</table>
+							</div>
+							<nav aria-label="Page navigation" class="text-center">
+								<ul class="pagination">
+									<li>
+										<a href="?page3=<{$page3-1}>&active=3<{if $week != ''}>&week=<{$week}><{/if}><{if $department != ''}>&department=<{$department}><{/if}>
+<{if $year != ''}>&year=<{$year}><{/if}>
+<{if $sex != ''}>&sex=<{$sex}><{/if}>
+<{if $sort != ''}>&sort=<{$sort}><{/if}>
+<{if $search3 != ''}>&search3=<{$search3}><{/if}>" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+									<{foreach from=$upPage3 item=temp}>
+									<li>
+										<a href="?page3=<{$temp}>&active=3<{if $week != ''}>&week=<{$week}><{/if}><{if $department != ''}>&department=<{$department}><{/if}>
+<{if $year != ''}>&year=<{$year}><{/if}>
+<{if $sex != ''}>&sex=<{$sex}><{/if}>
+<{if $sort != ''}>&sort=<{$sort}><{/if}>
+<{if $search3 != ''}>&search3=<{$search3}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+									<li class="active">
+										<a href="#"><{$page3}></a>
+									</li>
+									<{foreach from=$pages3 item=temp}>
+									<li>
+										<a href="?page3=<{$temp}>&active=3<{if $week != ''}>&week=<{$week}><{/if}><{if $department != ''}>&department=<{$department}><{/if}>
+<{if $year != ''}>&year=<{$year}><{/if}>
+<{if $sex != ''}>&sex=<{$sex}><{/if}>
+<{if $sort != ''}>&sort=<{$sort}><{/if}>
+<{if $search3 != ''}>&search3=<{$search3}><{/if}>"><{$temp}></a>
+									</li>
+									<{/foreach}>
+
+									<li>
+										<a href="?page3=<{$page3+1}>&active=3<{if $week != ''}>&week=<{$week}><{/if}><{if $department != ''}>&department=<{$department}><{/if}>
+<{if $year != ''}>&year=<{$year}><{/if}>
+<{if $sex != ''}>&sex=<{$sex}><{/if}>
+<{if $sort != ''}>&sort=<{$sort}><{/if}>
+<{if $search3 != ''}>&search3=<{$search3}><{/if}>" aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+						</div>
+						<!--留言区-->
+						<div role="tabpanel" class="tab-pane fade" id="message" aria-labelledby="message-tab">
+							<div class="row" style="height: 600px;">
+								<div class="row">
+									<div class="col-md-6 col-md-offset-3 text-center">
+										<div class="form-horizontal" style="margin-top: 100px;">
+											<h3 class="col-sm-offset-3">提交留言</h3>
+											<div class="form-group has-feedback">
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="message-title">标题</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" id="message-title" placeholder="标题" maxlength="15" required>
+													</div>
+												</div>
+
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3 inputmargin" for="message-con">内容</label>
+
+													<div class="col-sm-9">
+														<textarea id="message-con" class="form-control" rows="3" required></textarea>
+													</div>
+												</div>
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="message-phone">联系电话</label>
+													<div class="col-sm-9">
+														<input type="tel" class="form-control" id="message-phone" placeholder="联系电话" maxlength="15" required>
+													</div>
+												</div>
+												<div class="row inputmargin col-sm-9 col-sm-offset-3">
+													<button type="button" id="message-ok" class="btn btn-default">提交留言</button>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+						<!--个人信息修改区-->
+						<div role="tabpanel" class="tab-pane fade" id="info" aria-labelledby="info-tab">
+							<div class="row" style="height: 600px;">
+								<div class="row">
+									<div class="col-md-6 col-md-offset-3 text-center">
+
+										<form class="form-horizontal" style="margin-top: 100px;">
+											<h3 class="col-sm-offset-3">个人信息</h3>
+											<div class="form-group has-feedback">
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="info-id">学号</label>
+													<div class="col-sm-5">
+														<input type="text" class="form-control" id="info-id" value="<{$info[0].no}>" required disabled="disabled">
+													</div>
+												</div>
+
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="info-name">姓名</label>
+													<div class="col-sm-5">
+														<input type="text" class="form-control" id="info-name" value="<{$info[0].username}>" required>
+													</div>
+												</div>
+
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="info-class">班级</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" id="info-class" value="<{$info[0].class}>" maxlength="15" required>
+													</div>
+												</div>
+
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="info-year">入学年份</label>
+													<div class="col-sm-4">
+														<input type="date" class="form-control" id="info-year" value="<{$info[0].dates}>" style="padding-right:0px;" required>
+													</div>
+													<label class="control-label col-sm-2" for="info-sex">性别</label>
+													<div class="col-sm-3">
+														<select id="info-sex" class="form-control input">
+															<option value="男">男</option>
+															<option value="女">女</option>
+														</select>
+													</div>
+												</div>
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="info-dorm">宿舍号</label>
+													<div class="col-sm-3">
+														<input type="text" class="form-control" id="info-dorm" vale="<{$info[0].dormitory}>" maxlength="15" required>
+													</div>
+													<label class="control-label col-sm-3" for="info-teacher">辅导员</label>
+													<div class="col-sm-3">
+														<input type="text" class="form-control" id="info-teacher" vale="<{$info[0].instructor}>" maxlength="15" required>
+													</div>
+												</div>
+
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="info-phone">联系电话</label>
+													<div class="col-sm-9">
+														<input type="tel" class="form-control" id="info-phone" placeholder="<{$info[0].phone}>" maxlength="15" required>
+													</div>
+												</div>
+												<div class="row inputmargin col-sm-9 col-sm-offset-3">
+													<button id="info-ok" type="button" class="btn btn-default">确认修改</button>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--修改密码区-->
+						<div role="tabpanel" class="tab-pane fade" id="changepwd" aria-labelledby="info-tab">
+							<div class="row" style="height: 600px;">
+								<div class="row">
+									<div class="col-md-6 col-md-offset-3 text-center">
+										<div class="form-horizontal" style="margin-top: 100px;">
+											<h3 class="col-sm-offset-3">修改密码</h3>
+											<div class="form-group has-feedback">
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="opwd">旧密码</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" id="opwd" placeholder="旧密码" maxlength="15" required>
+													</div>
+												</div>
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="npwd">新密码</label>
+													<div class="col-sm-9">
+														<input type="tel" class="form-control" id="npwd" placeholder="新密码" maxlength="15" required>
+													</div>
+												</div>
+												<div class="row inputmargin">
+													<label class="control-label col-sm-3" for="zpwd">确认密码</label>
+													<div class="col-sm-9">
+														<input type="tel" class="form-control" id="zpwd" placeholder="确认密码" maxlength="15" required>
+													</div>
+												</div>
+												<div class="row inputmargin col-sm-9 col-sm-offset-3">
+													<button id="pwd-ok" type="button" class="btn btn-default">确认修改</button>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</body>
+
+</html>
